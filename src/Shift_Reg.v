@@ -31,7 +31,7 @@ module Shift_Reg
     input                                  load,
     input  [BLOCK_SIZE * DATA_WIDTH - 1:0] data_in,
     
-    output [DATA_WIDTH - 1:0] data_out
+    output [DATA_WIDTH - 1:0]              data_out
     );
     
     reg [BLOCK_SIZE * DATA_WIDTH - 1:0] Q_nxt, Q_crnt;

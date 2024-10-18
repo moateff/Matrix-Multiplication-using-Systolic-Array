@@ -36,8 +36,8 @@ module MAC
     );
     
     // Internal registers for operand1, operand2 and accumlator
-    reg [DATA_WIDTH - 1:0] operand1_reg, operand2_reg;
-    reg [DATA_WIDTH - 1:0] accumlator;
+    reg [DATA_WIDTH - 1:0]     operand1_reg, operand2_reg;
+    reg [2 * DATA_WIDTH - 1:0] accumlator;
     
     always @(negedge clk or posedge reset) 
     begin

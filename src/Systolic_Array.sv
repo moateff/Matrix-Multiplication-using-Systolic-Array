@@ -24,24 +24,21 @@ module Systolic_Array
 #(
     parameter DATA_WIDTH = 8,
     parameter A_ROWS = 2,
-    parameter A_COLS = 2,
     parameter B_COLS = 2
 )(
     input clk,
     input reset,
     
-    input  [DATA_WIDTH - 1:0] a [0:A_ROWS - 1],     // Matrix A
-    input  [DATA_WIDTH - 1:0] b [0:B_COLS - 1],      // Matrix B
+    input  [DATA_WIDTH - 1:0] a [0:A_ROWS - 1],                    // Matrix A
+    input  [DATA_WIDTH - 1:0] b [0:B_COLS - 1],                    // Matrix B
     
-    output [2 * DATA_WIDTH - 1:0] c [0:A_ROWS - 1][0:B_COLS - 1] // Matrix C
+    output [2 * DATA_WIDTH - 1:0] c [0:A_ROWS - 1][0:B_COLS - 1]   // Matrix C
 );
    
-    wire [DATA_WIDTH - 1:0] a_w  [0:A_ROWS - 1][0:B_COLS - 1];
-    wire [DATA_WIDTH - 1:0] b_w  [0:A_ROWS - 1][0:B_COLS - 1];
+    wire [DATA_WIDTH - 1:0] a_w [0:A_ROWS - 1][0:B_COLS - 1];
+    wire [DATA_WIDTH - 1:0] b_w [0:A_ROWS - 1][0:B_COLS - 1];
         
-    integer k, l;
     genvar i, j;  
-
     generate
         for (i = 0; i < A_ROWS; i = i + 1) begin 
             for (j = 0; j < B_COLS; j = j + 1) begin

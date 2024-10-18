@@ -35,15 +35,19 @@ module TOP_MODULE
 );
     wire rd_from_matrix_A;
     wire rd_from_matrix_B;
+    
     wire [0:A_ROWS - 1] load_matrix_A;
     wire [0:B_COLS - 1] load_matrix_B;
+    
     wire [DATA_WIDTH - 1:0] matrix_A [0:A_ROWS - 1];
     wire [DATA_WIDTH - 1:0] matrix_B [0:B_COLS - 1];
+    
     wire [A_COLS * DATA_WIDTH - 1:0] data_from_matrix_A;
     wire [A_COLS * DATA_WIDTH - 1:0] data_from_matrix_B;
+    
     wire [$clog2(A_ROWS * A_COLS) - 1:0] addr_matrix_A;
     wire [$clog2(A_COLS * B_COLS) - 1:0] addr_matrix_B;
-    
+        
     genvar m, n; 
     
     Controller #(
@@ -62,8 +66,8 @@ module TOP_MODULE
         .addr_matrix_B(addr_matrix_B)
     );
     
-    // Instantiate the Data_Mem module
-    Data_Mem #(
+    // Instantiate the Data_Mem module for Matrix A
+    ROM #(
         .DATA_WIDTH(DATA_WIDTH),
         .MEM_DEPTH(A_ROWS * A_COLS),
         .BLOCK_SIZE(A_COLS),
@@ -78,7 +82,7 @@ module TOP_MODULE
     
     generate
         for (m = 0; m < A_ROWS; m = m + 1) begin : row
-            // Instantiate the Shift Register module
+            // Instantiate the Shift Register module 
             Shift_Reg #(
                 .DATA_WIDTH(DATA_WIDTH),
                 .BLOCK_SIZE(A_COLS)
@@ -92,8 +96,8 @@ module TOP_MODULE
         end
     endgenerate
         
-    // Instantiate the Data_Mem module
-    Data_Mem #(
+    // Instantiate the Data_Mem module for Matrix B
+    ROM #(
         .DATA_WIDTH(DATA_WIDTH),
         .MEM_DEPTH(A_COLS * B_COLS),
         .BLOCK_SIZE(A_COLS),
@@ -122,11 +126,10 @@ module TOP_MODULE
         end
     endgenerate
     
-    // Instantiate the DUT (Device Under Test)
+    // Instantiate the Systolic Array module
     Systolic_Array #(
         .DATA_WIDTH(DATA_WIDTH),
         .A_ROWS(A_ROWS),
-        .A_COLS(A_COLS),
         .B_COLS(B_COLS)
     ) systolic_array (
         .clk(clk),
@@ -137,6 +140,14 @@ module TOP_MODULE
     );
     
     reg [DATA_WIDTH - 1:0] Matrix_C_mem [0:A_ROWS * B_COLS - 1];
+        
+    integer k;
+    always @(posedge reset)
+    begin
+        for (k = 0; k < (A_ROWS * B_COLS); k = k + 1) begin
+            Matrix_C_mem[k] = 'b0;
+        end
+    end
     
     integer i, j;
     // Map 2D matrix to 1D memory in row-major order
@@ -149,5 +160,5 @@ module TOP_MODULE
             end
         end
     end
-    
+                
 endmodule
